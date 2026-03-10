@@ -1,0 +1,34 @@
+services:
+  server:
+    build:
+      context: .
+      args:
+        VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MYSQL_HOST: mysql-container
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      SESSION_SECRET: ${SESSION_SECRET}
+    ports:
+      - 3000:3000
+    networks:
+      - default
+      - mysql-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - mysql-network
+
+networks:
+  default:
+  mysql-network:
+    external: true
