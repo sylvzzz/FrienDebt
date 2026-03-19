@@ -7,10 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-divdas.sql
+node_modules/
+server/node_modules/
 .env
-server/node_modules
 private_things
 dist
 dist-ssr
