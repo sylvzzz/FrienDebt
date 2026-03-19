@@ -118,24 +118,29 @@ app.post('/login', (req, res) => {
   });
 });
 
-/* Criar conta  DESATIVADO ATé FORMA SEGURA DE GUARDAR PASSWORDS
-app.post('/registar', (req, res) => {
-  const { nome, email, senha } = req.body;
 
-  const verifyQuery = 'SELECT * FROM utilizadores WHERE email = ?';
-  db.query(verifyQuery, [email], (err, results) => {
-    if (err) return res.sendStatus(500);
+app.post('/registar', (req, res) => {
+  const { username, email, password } = req.body;
+  console.log('Body recebido:', req.body); // ver o que chega
+
+  const verifyQuery = 'SELECT * FROM utilizadores WHERE email = ? or nome = ?';
+  db.query(verifyQuery, [email, username], (err, results) => {
+    if (err) {
+      return res.sendStatus(500);
+    }
     if (results.length > 0) return res.sendStatus(409);
 
     const insertQuery = 'INSERT INTO utilizadores (nome, email, senha) VALUES (?, ?, ?)';
-    db.query(insertQuery, [nome, email, senha], (err) => {
-      if (err) return res.sendStatus(500);
+    db.query(insertQuery, [username, email, password], (err) => {
+      if (err) {
+        return res.sendStatus(500);
+      }
       console.log(email, " created an account, Wellcome!")
       return res.sendStatus(201);
     });
   });
 });
-*/
+
 app.get('/friends', (req, res) => {
   const email = req.cookies.userEmail;
 
@@ -401,7 +406,7 @@ app.post('/delete', (req, res) => {
 app.get('/logout', (req, res) => {
   res.clearCookie('userEmail');
   req.session.destroy();
-  res.redirect('/login')
+  res.redirect('/signup')
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

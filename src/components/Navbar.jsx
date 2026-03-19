@@ -17,7 +17,7 @@ import { LogOut, Cog } from "lucide-react"
 export default function Navbar({ userData = {}, activePage = "" }) {
   const links = [
     { href: "/",       label: "Início",         key: "home"    },
-    { href: "/amigos", label: "Amigos",          key: "friends" },
+    { href: "/friendshub", label: "Amigos",          key: "friends" },
     { href: "/post",   label: "Publicar Dívida", key: "post"    },
   ];
 

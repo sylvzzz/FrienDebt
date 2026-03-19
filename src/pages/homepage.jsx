@@ -89,7 +89,7 @@ export function Homepage() {
           <CardContent className="p-0">
             {dividas.length === 0 ? (
               <div className="px-6 py-12 text-center text-gray-500">
-                Sem dívidas pendentes 😁
+                Sem dívidas pendentes...
               </div>
             ) : (
               <Table>
@@ -106,9 +106,13 @@ export function Homepage() {
                       key={divida.id ?? index}
                       className="border-gray-800 hover:bg-gray-800 transition-colors"
                     >
-                      <TableCell className="text-white">{divida.nome_pagador}</TableCell>
-                      <TableCell className="text-white">{divida.nome_cobrador}</TableCell>
-                      <TableCell className="text-right">
+                     <TableCell className="text-white">
+                      {divida.email_pagador === userData.email ? "Eu" : divida.nome_pagador}
+                    </TableCell>
+                    <TableCell className="text-white">
+                      {divida.email_cobrador === userData.email ? "Eu" : divida.nome_cobrador}
+                    </TableCell>
+                    <TableCell className="text-right">
                         <Badge
                           variant="outline"
                           className={

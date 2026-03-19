@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { PiggyBank, HandCoins, Handshake, BookCheck } from "lucide-react";
+import { PiggyBank, HandCoins, Handshake, BookCheck, Eye, EyeOff } from "lucide-react";
+import { useNotification } from "../components/Notification"
 
 function Login() {
+  const notify = useNotification();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const handleGoogleSuccess = async ({ credential }) => {
     try {
       const res = await fetch('/auth/google', {
@@ -18,10 +26,38 @@ function Login() {
       } else if (res.ok) {
         window.location.href = '/';
       } else {
-        alert('Erro ao iniciar sessão com Google. Tente novamente.');
+        notify('Erro','Falha ao iniciar sessão com Google. Tente novamente.');
       }
     } catch (error) {
-      alert('Erro de conexão. Tente novamente.');
+      notify('Erro','Falha na conexão. Tente novamente.');
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (res.ok) {
+        window.location.href = '/';
+      } else if (res.status === 404) {
+        setError('Email ou palavra-passe incorretos.');
+      } else if (res.status === 500) {
+        setError('Erro interno do servidor. Tente novamente mais tarde.');
+      } else {
+        setError('Erro ao iniciar sessão. Tente novamente.');
+      }
+    } catch (err) {
+      setError('Erro de conexão. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,8 +71,8 @@ function Login() {
 
               {/* Logo */}
               <div className="flex justify-center items-center gap-3 mb-8">
-                <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg"> 
-                  <PiggyBank /> 
+                <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg">
+                  <PiggyBank />
                 </div>
                 <span className="text-2xl font-extrabold text-white tracking-tight">
                   Frien<span className="text-green-400">Debt</span>
@@ -44,15 +80,10 @@ function Login() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight">
-                Onde ninguém,<br />
-                <span className="text-green-400">se escapa.</span>
-              </h1>
-
-              {/* Subtítulo */}
-              <p className="mt-4 text-gray-400 text-sm leading-relaxed max-w-xs">
-                Relembra os teus amigos daquilo que eles te devem.
-              </p>
+              <h3 className="text-xl font-extrabold text-white leading-tight tracking-tight">
+                Relembra os teus amigos,<br />
+                <span className="text-green-400">Rdaquilo que eles te devem.</span>
+              </h3>
 
               {/* Pills */}
               <div className="flex flex-wrap justify-center gap-2 mt-6">
@@ -69,10 +100,65 @@ function Login() {
 
               {/* Login */}
               <p className="text-white font-bold text-center mt-8 mb-6 text-xl">Iniciar Sessão</p>
+
+              {/* Email & Password Form */}
+              <div className="flex flex-col gap-3 mb-4">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-green-500 transition-colors"
+                />
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Palavra-passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 pr-11 text-sm focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-400 transition-colors"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Esconder palavra-passe' : 'Mostrar palavra-passe'}
+                  >
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </div>
+
+                {error && (
+                  <p className="text-red-400 text-xs text-left px-1">{error}</p>
+                )}
+
+                <button
+                  onClick={handleLogin}
+                  disabled={loading || !email || !password}
+                  className="w-full bg-green-500 hover:bg-green-400 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-2.5 text-sm transition-colors mt-1"
+                >
+                  {loading ? 'A entrar...' : 'Iniciar Sessão'}
+                </button>
+                <p className="text-gray-400 text-xs">
+                  Ainda não tens uma conta?{' '}
+                  <a href="/signup" className="text-blue-400">Criar Conta</a>
+                </p>
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-px bg-gray-700" />
+                <span className="text-gray-500 text-xs">ou</span>
+                <div className="flex-1 h-px bg-gray-700" />
+              </div>
+
+              {/* Google Login */}
               <div className="flex justify-center">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
-                  onError={() => alert('Erro ao iniciar sessão com Google.')}
+                  onError={() => notify('Erro','Falha ao iniciar sessão com Google.')}
                   theme="outline"
                   shape="pill"
                   size="large"

@@ -13,8 +13,8 @@ export function ProtectedRoute({ children }) {
       .catch(() => setAuth(false));
   }, []);
 
-  if (auth === null) return null; // a carregar
-  if (auth === false) return <Navigate to="/login" replace />;
+  if (auth === null) return null;
+  if (auth === false) return <Navigate to="/signin" replace />;
   return children;
 }
 
