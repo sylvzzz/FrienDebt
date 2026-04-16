@@ -11,13 +11,13 @@ Full-stack web application designed to help groups of friends manage shared expe
 ### Login
 <img src="docs/img/login.png" alt="Login" width="600"/>
 
-### Amigos
+### Friends Hub
 <img src="docs/img/friends.png" alt="Friends" width="600"/>
 
-### Marcar Despesa
+### Publish Expense
 <img src="docs/img/marcar.png" alt="Marcar Despesa" width="600"/>
 
-### Configurações
+### Account Settings
 <img src="docs/img/configs.png" alt="Configurações" width="600"/>
 
 ---
