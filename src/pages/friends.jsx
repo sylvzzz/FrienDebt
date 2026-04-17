@@ -65,12 +65,12 @@ export default function Friends() {
       alert(text);
       setAmigos((prev) => prev.filter(a => a.user_x !== nomeAmigo));
     } else {
-      alert(`Erro: ${text}`);
+      notify("Erro", text);
     }
   })
   .catch(err => {
     console.error('Erro na remoção:', err);
-    alert('Erro de conexão ao servidor.');
+    notify("Erro",'Erro de conexão ao servidor.');
   });
 }
 

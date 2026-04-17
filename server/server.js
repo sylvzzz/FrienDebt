@@ -130,7 +130,7 @@ app.post("/auth/google", authLimiter, async (req, res) => {
 })
 
 app.post("/login", authLimiter, async (req, res) => {
-  const { email, senha } = req.body
+  const { email, password } = req.body
   const query = "SELECT * FROM utilizadores WHERE email = ?"
 
   db.query(query, [email], async (err, results) => {
@@ -139,7 +139,7 @@ app.post("/login", authLimiter, async (req, res) => {
       return res.sendStatus(500)
     }
     if (results.length > 0) {
-      const match = await bcrypt.compare(senha, results[0].senha)
+      const match = await bcrypt.compare(password, results[0].senha)
       if (!match) {
         return res.sendStatus(404)
       }
@@ -163,7 +163,6 @@ app.post("/login", authLimiter, async (req, res) => {
 
 app.post("/registar", authLimiter, async (req, res) => {
   const { username, email, password } = req.body
-  console.log("Body recebido:", req.body)
 
   const verifyQuery = "SELECT * FROM utilizadores WHERE email = ? or nome = ?"
   db.query(verifyQuery, [email, username], async (err, results) => {

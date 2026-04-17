@@ -16,7 +16,7 @@ export function Account() {
     fetchUserData();
     const mensagem = sessionStorage.getItem('alert');
     if (mensagem) {
-      alert(mensagem);
+      notify("",mensagem);
       sessionStorage.removeItem('alert');
     }
   }, []);
@@ -65,12 +65,12 @@ export function Account() {
           body: JSON.stringify({ email: userData.email })
         });
         if (res.ok) {
-          alert('Conta apagada com sucesso.');
+          notify('Até breve!','Conta apagada com sucesso.');
           window.location.href = '/iniciarsessao'; 
         }
-        else alert('Erro ao apagar a conta. Tente novamente mais tarde.');
+        else notify("Erro ao apagar a conta.","Tente novamente mais tarde.");
       } catch (err) {
-        alert('Erro ao apagar a conta. Tente novamente mais tarde.');
+        notify("Erro ao apagar a conta.","Tente novamente mais tarde.");
       }
     }
   };
